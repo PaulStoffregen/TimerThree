@@ -32,7 +32,12 @@ ISR(TIMER3_OVF_vect)
 #elif defined(__arm__) && defined(CORE_TEENSY)
 void ftm2_isr(void)
 {
-  FTM2_SC |= FTM_SC_TOF;
+  uint32_t sc = FTM2_SC;
+  #ifdef KINETISL
+  if (sc & 0x80) FTM2_SC = sc;
+  #else
+  if (sc & 0x80) FTM2_SC = sc & 0x7F;
+  #endif
   Timer3.isrCallback();
 }
 
