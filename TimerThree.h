@@ -160,6 +160,12 @@ class TimerThree
 
 #elif defined(__arm__) && defined(CORE_TEENSY)
 
+#if defined(KINETISK)
+#define F_TIMER F_BUS
+#elif defined(KINETISL)
+#define F_TIMER (F_PLL/2)
+#endif
+
   public:
     //****************************
     //  Configuration
@@ -168,7 +174,7 @@ class TimerThree
 	setPeriod(microseconds);
     }
     void setPeriod(unsigned long microseconds) __attribute__((always_inline)) {
-	const unsigned long cycles = (F_BUS / 2000000) * microseconds;
+	const unsigned long cycles = (F_TIMER / 2000000) * microseconds;
 	if (cycles < TIMER3_RESOLUTION) {
 		clockSelectBits = 0;
 		pwmPeriod = cycles;
@@ -244,9 +250,9 @@ class TimerThree
     void pwm(char pin, unsigned int duty) __attribute__((always_inline)) {
 	setPwmDuty(pin, duty);
 	if (pin == TIMER3_A_PIN) {
-		CORE_PIN32_CONFIG = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE;
+		*portConfigRegister(TIMER3_A_PIN) = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE;
 	} else if (pin == TIMER3_B_PIN) {
-		CORE_PIN25_CONFIG = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE;
+		*portConfigRegister(TIMER3_B_PIN) = PORT_PCR_MUX(3) | PORT_PCR_DSE | PORT_PCR_SRE;
 	}
     }
     void pwm(char pin, unsigned int duty, unsigned long microseconds) __attribute__((always_inline)) {
@@ -255,9 +261,9 @@ class TimerThree
     }
     void disablePwm(char pin) __attribute__((always_inline)) {
 	if (pin == TIMER3_A_PIN) {
-		CORE_PIN32_CONFIG = 0;
+		*portConfigRegister(TIMER3_A_PIN) = 0;
 	} else if (pin == TIMER3_B_PIN) {
-		CORE_PIN25_CONFIG = 0;
+		*portConfigRegister(TIMER3_B_PIN) = 0;
 	}
     }
 
@@ -283,6 +289,8 @@ class TimerThree
     // properties
     static unsigned short pwmPeriod;
     static unsigned char clockSelectBits;
+
+#undef F_TIMER
 
 #endif
 };

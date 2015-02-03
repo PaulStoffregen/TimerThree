@@ -32,8 +32,7 @@ ISR(TIMER3_OVF_vect)
 #elif defined(__arm__) && defined(CORE_TEENSY)
 void ftm2_isr(void)
 {
-  uint32_t sc = FTM2_SC;
-  if (sc & 0x80) FTM2_SC = sc & 0x7F;
+  FTM2_SC |= FTM_SC_TOF;
   Timer3.isrCallback();
 }
 
