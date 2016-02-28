@@ -150,6 +150,7 @@ class TimerThree
 	TIMSK3 = 0;
     }
     static void (*isrCallback)();
+    static void isrDefaultUnused();
 
   private:
     // properties
@@ -284,6 +285,7 @@ class TimerThree
 	NVIC_DISABLE_IRQ(IRQ_FTM2);
     }
     static void (*isrCallback)();
+    static void isrDefaultUnused();
 
   private:
     // properties
