@@ -176,6 +176,45 @@ class TimerThree
     }
     void setPeriod(unsigned long microseconds) __attribute__((always_inline)) {
 	const unsigned long cycles = (F_TIMER / 2000000) * microseconds;
+
+  if (cycles < TIMER3_RESOLUTION * 16) {
+    if (cycles < TIMER3_RESOLUTION * 4) {
+      if (cycles < TIMER3_RESOLUTION) {
+        clockSelectBits = 0;
+        pwmPeriod = cycles;
+      }else{
+        clockSelectBits = 1;
+        pwmPeriod = cycles >> 1;
+      }
+    }else{
+      if (cycles < TIMER3_RESOLUTION * 8) {
+        clockSelectBits = 3;
+        pwmPeriod = cycles >> 3;
+      }else{
+        clockSelectBits = 4;
+        pwmPeriod = cycles >> 4;
+      }
+    }
+  }else{
+    if (cycles > TIMER3_RESOLUTION * 64) {
+      if (cycles > TIMER3_RESOLUTION * 128) {
+        clockSelectBits = 7;
+        pwmPeriod = TIMER3_RESOLUTION - 1;
+      }else{
+        clockSelectBits = 7;
+        pwmPeriod = cycles >> 7;
+      }
+    }else{
+      if (cycles > TIMER3_RESOLUTION * 32) {
+        clockSelectBits = 6;
+        pwmPeriod = cycles >> 6;
+      }else{
+        clockSelectBits = 5;
+        pwmPeriod = cycles >> 5;
+      }
+    }
+  }
+/*
 	if (cycles < TIMER3_RESOLUTION) {
 		clockSelectBits = 0;
 		pwmPeriod = cycles;
@@ -211,6 +250,7 @@ class TimerThree
 		clockSelectBits = 7;
 		pwmPeriod = TIMER3_RESOLUTION - 1;
 	}
+*/
 	uint32_t sc = FTM2_SC;
 	FTM2_SC = 0;
 	FTM2_MOD = pwmPeriod;
