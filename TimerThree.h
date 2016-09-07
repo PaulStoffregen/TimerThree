@@ -177,6 +177,9 @@ class TimerThree
     void setPeriod(unsigned long microseconds) __attribute__((always_inline)) {
 	const unsigned long cycles = (F_TIMER / 2000000) * microseconds;
 
+  /*
+  // This code does not work properly in all cases :(
+  // https://github.com/PaulStoffregen/TimerOne/issues/17 
   if (cycles < TIMER3_RESOLUTION * 16) {
     if (cycles < TIMER3_RESOLUTION * 4) {
       if (cycles < TIMER3_RESOLUTION) {
@@ -214,7 +217,7 @@ class TimerThree
       }
     }
   }
-/*
+  */
 	if (cycles < TIMER3_RESOLUTION) {
 		clockSelectBits = 0;
 		pwmPeriod = cycles;
@@ -250,7 +253,7 @@ class TimerThree
 		clockSelectBits = 7;
 		pwmPeriod = TIMER3_RESOLUTION - 1;
 	}
-*/
+
 	uint32_t sc = FTM2_SC;
 	FTM2_SC = 0;
 	FTM2_MOD = pwmPeriod;
