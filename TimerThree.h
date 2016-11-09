@@ -275,7 +275,7 @@ class TimerThree
 	start();
     }
     void resume() __attribute__((always_inline)) {
-	FTM2_SC = (FTM1_SC & (FTM_SC_TOIE | FTM_SC_PS(7))) | FTM_SC_CPWMS | FTM_SC_CLKS(1);
+	FTM2_SC = (FTM2_SC & (FTM_SC_TOIE | FTM_SC_PS(7))) | FTM_SC_CPWMS | FTM_SC_CLKS(1);
     }
 
     //****************************
