@@ -167,6 +167,14 @@ class TimerThree
 #define F_TIMER (F_PLL/2)
 #endif
 
+// Use only 15 bit resolution.  From K66 reference manual, 45.5.7 page 1200:
+//   The CPWM pulse width (duty cycle) is determined by 2 x (CnV - CNTIN) and the
+//   period is determined by 2 x (MOD - CNTIN). See the following figure. MOD must be
+//   kept in the range of 0x0001 to 0x7FFF because values outside this range can produce
+//   ambiguous results.
+#undef TIMER3_RESOLUTION
+#define TIMER3_RESOLUTION 32768
+
   public:
     //****************************
     //  Configuration
