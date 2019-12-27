@@ -29,7 +29,7 @@ ISR(TIMER3_OVF_vect)
   Timer3.isrCallback();
 }
 
-#elif defined(__arm__) && defined(CORE_TEENSY)
+#elif defined(__arm__) && defined(TEENSYDUINO) && (defined(KINETISK) || defined(KINETISL))
 void ftm2_isr(void)
 {
   uint32_t sc = FTM2_SC;
@@ -38,6 +38,13 @@ void ftm2_isr(void)
   #else
   if (sc & 0x80) FTM2_SC = sc & 0x7F;
   #endif
+  Timer3.isrCallback();
+}
+
+#elif defined(__arm__) && defined(TEENSYDUINO) && defined(__IMXRT1062__)
+void TimerThree::isr(void)
+{
+  FLEXPWM2_SM2STS = FLEXPWM_SMSTS_RF;
   Timer3.isrCallback();
 }
 
